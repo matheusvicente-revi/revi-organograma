@@ -159,7 +159,7 @@ function countUnder(pid){let c=0;childrenOf(pid).forEach(ch=>{c++;c+=countUnder(
 function countArea(aid){return D.people.filter(p=>p.areaId===aid).length}
 function matchP(p){if(!searchTerm)return true;const s=searchTerm.toLowerCase();return p.name.toLowerCase().includes(s)||p.role.toLowerCase().includes(s)||p.email.toLowerCase().includes(s)}
 function getLeaderName(person){if(!person.parentId)return null;const l=D.people.find(p=>p.id===person.parentId);return l?l.name:null}
-function founderColor(fid){const m={nicholas:{color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE'},juliana:{color:'#059669',bg:'#ECFDF5',border:'#A7F3D0'},marcelo:{color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE'}};return m[fid]||{color:'#666',bg:'#f5f4f1',border:'#ccc'}}
+function founderColor(fid){const m={nicholas:{color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE'},juliana:{color:'#059669',bg:'#ECFDF5',border:'#A7F3D0'},marcelo:{color:'#CA8A04',bg:'#FEFCE8',border:'#FDE68A'}};return m[fid]||{color:'#666',bg:'#f5f4f1',border:'#ccc'}}
 
 function pCardHTML(person){
   const op=searchTerm&&!matchP(person)?'opacity:.15;':'';
