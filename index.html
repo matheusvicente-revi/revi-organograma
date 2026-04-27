@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Organograma — Revi</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F4F1;--card:#fff;--text:#1a1a1a;--text2:#666;--text3:#999;--brd:#e4e2dd;--brd-lt:#edebe7;--r:14px;--rs:8px;--sh:0 1px 4px rgba(0,0,0,.04),0 4px 14px rgba(0,0,0,.03);--sh2:0 4px 20px rgba(0,0,0,.08);--font:'DM Sans',-apple-system,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh}
+.login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
+.login-box{background:var(--card);border-radius:var(--r);padding:2.5rem;width:380px;max-width:100%;box-shadow:var(--sh);text-align:center}
+.login-box h1{font-size:24px;font-weight:700;margin-bottom:6px}
+.login-box p{font-size:13px;color:var(--text2);margin-bottom:1.5rem}
+.login-box .login-btns{display:flex;flex-direction:column;gap:10px}
+.login-box .lb{font-family:var(--font);font-size:14px;font-weight:500;padding:12px;border-radius:var(--rs);cursor:pointer;border:1px solid var(--brd);background:var(--card);color:var(--text);transition:all .15s;width:100%}
+.login-box .lb:hover{background:var(--bg)}
+.login-box .lb-admin{background:#1a1a1a;color:#fff;border-color:#1a1a1a}.login-box .lb-admin:hover{background:#333}
+.login-box .pwd-row{margin-top:12px;display:none;flex-direction:column;gap:8px}
+.login-box .pwd-row.show{display:flex}
+.login-box .pwd-row input{font-family:var(--font);font-size:14px;padding:10px 12px;border:1px solid var(--brd);border-radius:var(--rs);outline:none;text-align:center}
+.login-box .pwd-row input:focus{border-color:#1a1a1a}
+.login-box .err{font-size:12px;color:#dc2626;margin-top:4px;display:none}
+.role-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;margin-left:8px}
+.role-admin{background:#ECFDF5;color:#059669}
+.role-viewer{background:#FFF7ED;color:#EA580C}
+.header{padding:2rem 2rem 1.2rem;background:var(--card);border-bottom:1px solid var(--brd-lt);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.header h1{font-size:24px;font-weight:700;letter-spacing:-.5px;display:flex;align-items:center}
+.header p{font-size:13px;color:var(--text2);margin-top:2px}
+.hdr-btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--font);font-size:13px;font-weight:500;padding:8px 16px;border-radius:var(--rs);cursor:pointer;border:1px solid var(--brd);background:var(--card);color:var(--text);transition:all .15s}
+.btn:hover{background:var(--bg)}.btn:active{transform:scale(.97)}
+.btn-dark{background:#1a1a1a;color:#fff;border-color:#1a1a1a}.btn-dark:hover{background:#333}
+.btn-red{background:#fef2f2;color:#dc2626;border-color:#fecaca}.btn-red:hover{background:#fee2e2}
+.search-row{padding:1rem 2rem;background:var(--bg)}
+.search-row input{font-family:var(--font);width:100%;max-width:380px;padding:10px 14px;border:1px solid var(--brd);border-radius:var(--rs);font-size:14px;background:var(--card);color:var(--text);outline:none}
+.search-row input:focus{border-color:#1a1a1a}.search-row input::placeholder{color:var(--text3)}
+.counter{font-size:12px;color:var(--text3);padding:.3rem 2rem .8rem}
+.main{padding:1rem 2rem 4rem;max-width:1400px;margin:0 auto}
+.founders{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}
+.f-card{background:var(--card);border-radius:var(--r);padding:20px;border:2px solid var(--brd-lt);box-shadow:var(--sh);cursor:pointer;transition:all .2s;position:relative;user-select:none}
+.f-card:hover{box-shadow:var(--sh2)}
+.f-card.open{border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom-style:dashed}
+.f-card .top{display:flex;align-items:center;gap:14px}
+.f-card .avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0}
+.f-card .info h2{font-size:17px;font-weight:700}
+.f-card .info .role{font-size:13px;color:var(--text2)}
+.f-card .info .dept{font-size:11px;color:var(--text3);margin-top:1px}
+.f-card .contact{margin-top:12px;padding-top:10px;border-top:1px solid var(--brd-lt);font-size:12px;color:var(--text3);line-height:1.7}
+.f-card .contact a{color:var(--text2);text-decoration:none}
+.f-card .chevron{position:absolute;top:20px;right:20px;width:28px;height:28px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text2);transition:transform .3s}
+.f-card.open .chevron{transform:rotate(180deg)}
+.f-card .badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;letter-spacing:.3px;text-transform:uppercase;margin-top:6px}
+.f-card .edit-f{position:absolute;top:20px;right:56px;width:28px;height:28px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text3);border:none;cursor:pointer;font-family:var(--font)}
+.f-card .edit-f:hover{color:var(--text);background:var(--brd-lt)}
+.panel{background:var(--card);border:2px solid var(--brd-lt);border-top:none;border-radius:0 0 var(--r) var(--r);overflow:hidden;max-height:0;transition:max-height .5s ease}
+.panel.open{max-height:12000px}.panel-inner{padding:12px 14px 18px}
+.area-row{border:1px solid var(--brd-lt);border-radius:10px;margin-bottom:8px;overflow:hidden;transition:border-color .15s}
+.area-row:last-child{margin-bottom:0}.area-row:hover{border-color:var(--brd)}
+.area-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;user-select:none;transition:background .15s}
+.area-head:hover{background:#fafaf8}
+.area-head .left{display:flex;align-items:center;gap:8px}
+.area-head .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.area-head .a-name{font-size:13px;font-weight:600}
+.area-head .a-leader{font-size:11px;color:var(--text2);margin-left:4px}
+.area-head .right{display:flex;align-items:center;gap:6px}
+.area-head .cnt{font-size:10px;background:var(--bg);padding:2px 8px;border-radius:10px;color:var(--text3)}
+.area-head .ebtn{font-size:10px;padding:2px 8px;border-radius:6px;border:1px solid var(--brd-lt);background:var(--card);color:var(--text3);cursor:pointer;font-family:var(--font)}
+.area-head .ebtn:hover{border-color:var(--brd);color:var(--text2)}
+.area-head .chev{font-size:10px;color:var(--text3);transition:transform .3s;margin-left:2px}
+.area-row.open .area-head .chev{transform:rotate(180deg)}
+.area-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.area-row.open .area-body{max-height:8000px}.area-body-inner{padding:4px 14px 14px}
+.sub-leader{border:1px solid var(--brd-lt);border-radius:8px;margin-bottom:6px;overflow:hidden}
+.sub-leader:last-child{margin-bottom:0}
+.sl-head{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;cursor:pointer;user-select:none}
+.sl-head:hover{background:#fafaf8}
+.sl-head .sl-left{display:flex;align-items:center;gap:8px}
+.sl-head .mini-av{width:28px;height:28px;border-radius:50%;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sl-head .sl-name{font-size:12px;font-weight:600}
+.sl-head .sl-role{font-size:10px;color:var(--text2)}
+.sl-head .sl-contact{font-size:10px;color:var(--text3);margin-top:2px;line-height:1.5}
+.sl-head .sl-contact a{color:var(--text2);text-decoration:none}
+.sl-head .sl-right{display:flex;align-items:center;gap:6px}
+.sl-head .sl-chev{font-size:9px;color:var(--text3);transition:transform .3s}
+.sub-leader.open .sl-head .sl-chev{transform:rotate(180deg)}
+.sl-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.sub-leader.open .sl-body{max-height:6000px}
+.sl-body-inner{padding:6px 10px 10px;display:flex;flex-wrap:wrap;gap:6px}
+.p-card{background:var(--bg);border:1px solid var(--brd-lt);border-radius:10px;padding:10px 12px;width:100%;max-width:260px;cursor:pointer;transition:all .15s}
+.p-card:hover{border-color:var(--brd);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.p-card.viewer{cursor:default}
+.p-card .pc-row{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.p-card .mini-av{width:26px;height:26px;border-radius:50%;font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.p-card .pc-name{font-size:12px;font-weight:600;line-height:1.2}
+.p-card .pc-role{font-size:10px;color:var(--text2);margin-top:1px}
+.p-card .pc-leader{font-size:9px;color:var(--text3);margin-top:2px;font-style:italic}
+.p-card .pc-contact{font-size:10px;color:var(--text3);margin-top:4px;line-height:1.5}
+.p-card .pc-contact a{color:var(--text2);text-decoration:none}
+.direct-cards{display:flex;flex-wrap:wrap;gap:6px}
+.overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);backdrop-filter:blur(3px);z-index:1000;justify-content:center;align-items:flex-start;padding:4vh 1rem}
+.overlay.active{display:flex}
+.modal{background:var(--card);border-radius:var(--r);padding:1.8rem;width:440px;max-width:100%;box-shadow:0 24px 80px rgba(0,0,0,.14);animation:mIn .2s ease;max-height:90vh;overflow-y:auto}
+@keyframes mIn{from{opacity:0;transform:translateY(-16px) scale(.97)}to{opacity:1;transform:none}}
+.modal h3{font-size:20px;font-weight:700;margin-bottom:1.2rem}
+.modal label{display:block;font-size:11px;font-weight:600;color:var(--text3);margin:10px 0 3px;text-transform:uppercase;letter-spacing:.5px}
+.modal input,.modal select{width:100%;font-family:var(--font);font-size:14px;padding:9px 12px;border:1px solid var(--brd);border-radius:var(--rs);background:var(--bg);color:var(--text);outline:none}
+.modal input:focus,.modal select:focus{border-color:#1a1a1a}
+.modal .acts{display:flex;gap:8px;margin-top:1.4rem;justify-content:flex-end;align-items:center;flex-wrap:wrap}
+.modal .acts .sp{flex:1}
+.modal .hint{font-size:10px;color:var(--text3);margin-top:3px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div id="loginScreen" class="login-screen"><div class="login-box"><h1>Organograma Revi</h1><p>Escolha como deseja acessar</p><div class="login-btns"><button class="lb lb-admin" onclick="showPwd()">🔐 Entrar como Admin</button><button class="lb" onclick="enterAs('viewer')">👁 Entrar como Visitante</button></div><div class="pwd-row" id="pwdRow"><input type="password" id="pwdInput" placeholder="Senha de admin" onkeydown="if(event.key==='Enter')checkPwd()"><button class="lb lb-admin" onclick="checkPwd()">Entrar</button><div class="err" id="pwdErr">Senha incorreta.</div></div></div></div>
+<div id="appScreen" style="display:none">
+<div class="header"><div><h1>Organograma Revi <span class="role-badge" id="roleBadge"></span></h1><p id="headerHint"></p></div><div class="hdr-btns"><button class="btn btn-dark admin-only" onclick="openPersonModal(null)">+ Adicionar</button><button class="btn admin-only" onclick="openAreaModal()">+ Nova Área</button><button class="btn" onclick="exportJSON()">Exportar</button><button class="btn admin-only" onclick="importJSON()">Importar</button><button class="btn admin-only" onclick="openChangePwd()">🔑 Senha</button><button class="btn btn-red admin-only" onclick="resetData()">Resetar</button><button class="btn" onclick="logout()">Sair</button></div></div>
+<div class="search-row"><input id="search" placeholder="Buscar por nome, cargo ou área..." oninput="handleSearch(this.value)"></div>
+<div class="counter" id="counter"></div>
+<div class="main"><div class="founders" id="root"></div></div>
+</div>
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()"><div class="modal"><h3 id="mtitle">Colaborador</h3><label>Nome completo</label><input id="f-name"><label>Cargo</label><input id="f-role"><div id="founderExtra" class="hidden"><label>Departamento</label><input id="f-dept"></div><label>Email</label><input id="f-email" type="email"><label>Telefone</label><input id="f-phone" placeholder="(00) 00000-0000"><div id="personExtra"><label>Área</label><select id="f-area"></select><label>Liderança direta</label><select id="f-leader"></select><div class="hint">Ao mudar a liderança ou área, a pessoa será reposicionada automaticamente.</div><label>É sub-líder? (tem subordinados)</label><select id="f-isSub"><option value="0">Não</option><option value="1">Sim</option></select></div><div class="acts"><button class="btn btn-red" id="btn-del" onclick="delCurrent()">Excluir</button><span class="sp"></span><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-dark" onclick="saveCurrent()">Salvar</button></div></div></div>
+<div class="overlay" id="areaOverlay" onclick="if(event.target===this)closeAreaModal()"><div class="modal"><h3 id="areaMtitle">Editar Área</h3><label>Nome da área</label><input id="a-name"><label>Líder da área</label><input id="a-leader" placeholder="Nome do líder"><label>Cor</label><input id="a-color" type="color"><label>Pertence ao Founder</label><select id="a-founder"></select><div class="acts"><button class="btn btn-red" id="a-btn-del" onclick="delArea()">Excluir Área</button><span class="sp"></span><button class="btn" onclick="closeAreaModal()">Cancelar</button><button class="btn btn-dark" onclick="saveArea()">Salvar</button></div></div></div>
+<div class="overlay" id="pwdOverlay" onclick="if(event.target===this)closePwdModal()"><div class="modal"><h3>Alterar senha de admin</h3><label>Senha atual</label><input id="cp-old" type="password"><label>Nova senha</label><input id="cp-new" type="password"><label>Confirmar nova senha</label><input id="cp-confirm" type="password"><div class="hint" id="cp-err" style="color:#dc2626"></div><div class="acts"><span class="sp"></span><button class="btn" onclick="closePwdModal()">Cancelar</button><button class="btn btn-dark" onclick="changePwd()">Alterar</button></div></div></div>
+<script>
+const PWD_HASH_KEY='revi_admin_hash';
+async function sha256(str){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('')}
+let defaultHash=null;
+async function initAuth(){defaultHash=await sha256('revi2024');if(!localStorage.getItem(PWD_HASH_KEY))localStorage.setItem(PWD_HASH_KEY,defaultHash)}
+initAuth();
+function getStoredHash(){return localStorage.getItem(PWD_HASH_KEY)||defaultHash}
+let userRole=null;
+function isAdmin(){return userRole==='admin'}
+function showPwd(){document.getElementById('pwdRow').classList.add('show');document.getElementById('pwdInput').focus()}
+async function checkPwd(){const h=await sha256(document.getElementById('pwdInput').value);if(h===getStoredHash()){document.getElementById('pwdErr').style.display='none';enterAs('admin')}else{document.getElementById('pwdErr').style.display='block'}}
+function enterAs(role){userRole=role;document.getElementById('loginScreen').style.display='none';document.getElementById('appScreen').style.display='block';const b=document.getElementById('roleBadge');if(role==='admin'){b.textContent='Admin';b.className='role-badge role-admin';document.getElementById('headerHint').textContent='Modo admin — clique em qualquer elemento para editar'}else{b.textContent='Visualização';b.className='role-badge role-viewer';document.getElementById('headerHint').textContent='Modo visualização — apenas leitura'}document.querySelectorAll('.admin-only').forEach(el=>el.style.display=isAdmin()?'':'none');render()}
+function logout(){userRole=null;document.getElementById('appScreen').style.display='none';document.getElementById('loginScreen').style.display='flex';document.getElementById('pwdRow').classList.remove('show');document.getElementById('pwdInput').value='';document.getElementById('pwdErr').style.display='none'}
+function openChangePwd(){['cp-old','cp-new','cp-confirm'].forEach(i=>document.getElementById(i).value='');document.getElementById('cp-err').textContent='';document.getElementById('pwdOverlay').classList.add('active')}
+function closePwdModal(){document.getElementById('pwdOverlay').classList.remove('active')}
+async function changePwd(){const old=document.getElementById('cp-old').value,nw=document.getElementById('cp-new').value,cf=document.getElementById('cp-confirm').value,err=document.getElementById('cp-err'),oh=await sha256(old);if(oh!==getStoredHash()){err.textContent='Senha atual incorreta.';return}if(nw.length<4){err.textContent='Mínimo 4 caracteres.';return}if(nw!==cf){err.textContent='As senhas não coincidem.';return}localStorage.setItem(PWD_HASH_KEY,await sha256(nw));closePwdModal();alert('Senha alterada!')}
+
+const SK='revi_org_v9';
+function makeId(){return '_'+Math.random().toString(36).slice(2,9)}
+function buildDefault(){return {"areas_order": {"nicholas": ["vendas", "growth", "parcerias", "financeiro"], "juliana": ["cs", "cx", "people", "produto"], "marcelo": ["eng"]}, "areas": {"vendas": {"id": "vendas", "name": "Vendas", "leader": "Nicholas Love", "color": "#EA580C"}, "growth": {"id": "growth", "name": "Marketing & Growth", "leader": "Allan de Meira Riffert", "color": "#0891B2"}, "parcerias": {"id": "parcerias", "name": "Parcerias", "leader": "Bruno Eduardo C. Romera", "color": "#BE185D"}, "financeiro": {"id": "financeiro", "name": "Financeiro", "leader": "", "color": "#64748B"}, "cs": {"id": "cs", "name": "Customer Success", "leader": "Juliana Haddad", "color": "#059669"}, "cx": {"id": "cx", "name": "Customer Experience", "leader": "Veronica Gomes", "color": "#db2777"}, "people": {"id": "people", "name": "People", "leader": "Matheus Vicente", "color": "#64748b"}, "produto": {"id": "produto", "name": "Produto", "leader": "Juliana Haddad", "color": "#16a34a"}, "eng": {"id": "eng", "name": "Software Engineering", "leader": "Marcelo Miyachi", "color": "#7C3AED"}}, "founders": [{"id": "nicholas", "name": "Nicholas Love", "role": "CEO", "dept": "Marketing, Comercial e Growth", "email": "nicholas@userevi.com", "phone": "(11) 93619-6953"}, {"id": "juliana", "name": "Juliana Haddad", "role": "COO", "dept": "Operações e Produto", "email": "juliana@userevi.com", "phone": "(11) 93502-5879"}, {"id": "marcelo", "name": "Marcelo Akihiro Miyachi", "role": "CTO", "dept": "Engenharia", "email": "marcelo@userevi.com", "phone": "(41) 99579-4954"}], "people": [{"id": "p1", "name": "Felipe Braga", "role": "Executivo de Vendas", "email": "felipe@userevi.com", "phone": "(11) 99361-8709", "areaId": "vendas", "parentId": null, "isSubLeader": false}, {"id": "p2", "name": "Guilherme Sanches Braga", "role": "Account Executive", "email": "guilherme@userevi.com", "phone": "(11) 93621-1388", "areaId": "vendas", "parentId": null, "isSubLeader": false}, {"id": "p3", "name": "Éder Lenhard Käfer", "role": "BDR", "email": "eder@userevi.com", "phone": "(11) 93502-9706", "areaId": "vendas", "parentId": null, "isSubLeader": false}, {"id": "p4", "name": "Matheus de Jesus Silva", "role": "BDR", "email": "matheus@userevic.com", "phone": "(11) 95838-2424", "areaId": "vendas", "parentId": null, "isSubLeader": false}, {"id": "p5", "name": "Lucas Antunes Coelho", "role": "Executivo de Vendas", "email": "lucas@userevi.com", "phone": "(11) 93502-9708", "areaId": "vendas", "parentId": null, "isSubLeader": false}, {"id": "p6", "name": "Mateus de Sousa Santos", "role": "BDR", "email": "mateus@userevi.com", "phone": "(11) 93619-0839", "areaId": "vendas", "parentId": null, "isSubLeader": false}, {"id": "p7", "name": "Allan de Meira Riffert", "role": "Head de Growth", "email": "allan@userevi.com", "phone": "(11) 94224-4642", "areaId": "growth", "parentId": null, "isSubLeader": true}, {"id": "p8", "name": "Helder Mendes", "role": "Gerente de Marketing", "email": "helder@userevi.com", "phone": "(31) 99363-1567", "areaId": "growth", "parentId": null, "isSubLeader": true}, {"id": "p9", "name": "Yasmin Nobre", "role": "Estagiária de Marketing", "email": "yasmin@userevi.com", "phone": "—", "areaId": "growth", "parentId": "p8", "isSubLeader": false}, {"id": "p10", "name": "Bruno Romera", "role": "Head de Canais e Parcerias", "email": "bruno@userevi.com", "phone": "(11) 95559-6163", "areaId": "parcerias", "parentId": null, "isSubLeader": true}, {"id": "p11", "name": "Vanessa Regina Cuck Colpaert", "role": "Parcerias", "email": "vanessa@userevi.com", "phone": "(11) 99794-9078", "areaId": "parcerias", "parentId": "p10", "isSubLeader": false}, {"id": "p12", "name": "Stephanie Semprebom de Lima", "role": "Analista Financeiro", "email": "stephanie@userevi.com", "phone": "(11) 93619-2313", "areaId": "financeiro", "parentId": null, "isSubLeader": false}, {"id": "p13", "name": "Sarah Souza Alves", "role": "Customer Success Manager", "email": "sarah@userevi.com", "phone": "(11) 93503-1984", "areaId": "cs", "parentId": null, "isSubLeader": false}, {"id": "p14", "name": "Victor Caio Andrade Costa", "role": "Customer Success Manager", "email": "victor@userevi.com", "phone": "(11) 93619-8116", "areaId": "cs", "parentId": null, "isSubLeader": false}, {"id": "p15", "name": "Yago Barbosa", "role": "Gestor de Customer Success", "email": "yago@userevi.com", "phone": "(55) 97567-4480", "areaId": "cs", "parentId": null, "isSubLeader": true}, {"id": "p16", "name": "Michele Szostak Nascimento", "role": "Customer Success Manager", "email": "michele@userevi.com", "phone": "(11) 93621-4817", "areaId": "cs", "parentId": "p15", "isSubLeader": false}, {"id": "p17", "name": "Isadora Ferreira Martinovich", "role": "Customer Success Manager", "email": "isadora@userevi.com", "phone": "(11) 93621-4690", "areaId": "cs", "parentId": "p15", "isSubLeader": false}, {"id": "p18", "name": "Roberto Ferreira da Silva Porto", "role": "Customer Success Manager", "email": "roberto@userevi.com", "phone": "(11) 93619-5650", "areaId": "cs", "parentId": "p15", "isSubLeader": false}, {"id": "p19", "name": "Gustavo Reis Teixeira Fortes", "role": "Customer Success Manager", "email": "gustavo@userevi.com", "phone": "(11) 93620-5385", "areaId": "cs", "parentId": "p15", "isSubLeader": false}, {"id": "p20", "name": "Gabriela Ratto Gridi Papp", "role": "CSM Specialist", "email": "gabrielapapp@userevi.com", "phone": "(11) 93618-7978", "areaId": "cs", "parentId": "p15", "isSubLeader": false}, {"id": "p21", "name": "Camila Beatriz dos S. Marques", "role": "Customer Success Manager", "email": "camila@userevi.com", "phone": "(11) 93620-5379", "areaId": "cs", "parentId": "p15", "isSubLeader": false}, {"id": "p22", "name": "Fernanda Chagas de Queiroz", "role": "Customer Success Manager", "email": "fernanda@userevi.com", "phone": "(11) 93618-7957", "areaId": "cs", "parentId": "p15", "isSubLeader": false}, {"id": "p23", "name": "Gabriela Aparecida Perlotti", "role": "CSM Specialist", "email": "gabriela@userevi.com", "phone": "(11) 93618-9528", "areaId": "cs", "parentId": "p15", "isSubLeader": false}, {"id": "p24", "name": "Gabriel Gomes de Almeida", "role": "Customer Success Manager", "email": "gabrielalmeida@userevi.com", "phone": "(11) 93619-0136", "areaId": "cs", "parentId": "p15", "isSubLeader": false}, {"id": "p25", "name": "Veronica Gomes", "role": "Head de Customer Experience", "email": "veronica@userevi.com", "phone": "(11) 93502-5878", "areaId": "cx", "parentId": null, "isSubLeader": true}, {"id": "p26", "name": "Evelyn Crepaldi dos Santos", "role": "CX Specialist", "email": "evelyn@userevi.com", "phone": "(11) 93618-9518", "areaId": "cx", "parentId": "p25", "isSubLeader": false}, {"id": "p27", "name": "William Gomes Magalhães", "role": "Analista de CX", "email": "william@userevi.com", "phone": "(11) 93621-6299", "areaId": "cx", "parentId": "p25", "isSubLeader": false}, {"id": "p28", "name": "Maria Eduarda Camargo Pamplona", "role": "Analista de CX", "email": "mariaeduarda@userevi.com", "phone": "(11) 93621-6302", "areaId": "cx", "parentId": "p25", "isSubLeader": false}, {"id": "p29", "name": "Lillian Araujo de Brito", "role": "Analista de CX", "email": "lillian@userevi.com", "phone": "(11) 93621-6349", "areaId": "cx", "parentId": "p25", "isSubLeader": false}, {"id": "p30", "name": "Nathalya Ribeiro de Oliveira", "role": "Analista de CX", "email": "nathalya@userevi.com", "phone": "(11) 93619-1344", "areaId": "cx", "parentId": "p25", "isSubLeader": false}, {"id": "p31", "name": "Eduardo Nascimento Silva", "role": "CX Specialist", "email": "eduardo@userevi.com", "phone": "(11) 93621-5775", "areaId": "cx", "parentId": "p25", "isSubLeader": false}, {"id": "p32", "name": "Matheus Vicente", "role": "People Manager", "email": "matheus.vicente@userevi.com", "phone": "(11) 93621-2614", "areaId": "people", "parentId": null, "isSubLeader": false}, {"id": "p33", "name": "Yuri Jacob An", "role": "PO", "email": "yuri@userevi.com", "phone": "(11) 93621-3215", "areaId": "produto", "parentId": null, "isSubLeader": false}, {"id": "p34", "name": "Caio Reis Oliveira", "role": "Estagiário de Software Engineer", "email": "caio@userevi.com", "phone": "(62) 98519-2281", "areaId": "eng", "parentId": null, "isSubLeader": false}, {"id": "p35", "name": "Micael Vitor Felix Ferreira", "role": "Desenvolvedor / SRE", "email": "micael@userevi.com", "phone": "(11) 95455-5955", "areaId": "eng", "parentId": null, "isSubLeader": false}, {"id": "p36", "name": "Gabriel Januario D. de Souza", "role": "Software Engineer", "email": "gabriel@userevi.com", "phone": "(31) 99899-0882", "areaId": "eng", "parentId": null, "isSubLeader": false}, {"id": "p37", "name": "José Carlos Gomes Filho", "role": "Software Engineer", "email": "jose@userevi.com", "phone": "(82) 82077-7653", "areaId": "eng", "parentId": null, "isSubLeader": false}, {"id": "p38", "name": "Andrey Spies", "role": "Software Engineer", "email": "andrey@userevi.com", "phone": "(51) 99774-7272", "areaId": "eng", "parentId": null, "isSubLeader": false}, {"id": "p39", "name": "Israel Fagundes da S. Alves", "role": "Software Engineer", "email": "israel@userevi.com", "phone": "(61) 99873-6375", "areaId": "eng", "parentId": null, "isSubLeader": false}, {"id": "p40", "name": "Orlando Angelim Noronha", "role": "Software Engineer", "email": "orlando@userevi.com", "phone": "(41) 98848-1092", "areaId": "eng", "parentId": null, "isSubLeader": false}, {"id": "p41", "name": "Higor Giovane Monteiro Torres", "role": "Software Engineer", "email": "higor@userevi.com", "phone": "(62) 98519-4415", "areaId": "eng", "parentId": null, "isSubLeader": false}, {"id": "p42", "name": "Júlio César de Faria", "role": "Software Engineer", "email": "julio@userevi.com", "phone": "(62) 99239-3780", "areaId": "eng", "parentId": null, "isSubLeader": false}]}}
+let D=JSON.parse(localStorage.getItem(SK))||buildDefault();
+function persist(){localStorage.setItem(SK,JSON.stringify(D))}
+function resetData(){if(confirm('Resetar tudo para o original?')){localStorage.removeItem(SK);D=buildDefault();render()}}
+
+let searchTerm='';
+const openF=new Set(),openA=new Set(),openS=new Set();
+function togF(id){openF.has(id)?openF.delete(id):openF.add(id);render()}
+function togA(k,ev){ev.stopPropagation();openA.has(k)?openA.delete(k):openA.add(k);render()}
+function togS(k,ev){ev.stopPropagation();openS.has(k)?openS.delete(k):openS.add(k);render()}
+function ini(n){return n.split(' ').filter(w=>w).map(w=>w[0]).slice(0,2).join('').toUpperCase()}
+function childrenOf(pid){return D.people.filter(p=>p.parentId===pid)}
+function countUnder(pid){let c=0;childrenOf(pid).forEach(ch=>{c++;c+=countUnder(ch.id)});return c}
+function countArea(aid){return D.people.filter(p=>p.areaId===aid).length}
+function matchP(p){if(!searchTerm)return true;const s=searchTerm.toLowerCase();return p.name.toLowerCase().includes(s)||p.role.toLowerCase().includes(s)||p.email.toLowerCase().includes(s)}
+function getLeaderName(person){if(!person.parentId)return null;const l=D.people.find(p=>p.id===person.parentId);return l?l.name:null}
+function founderColor(fid){const m={nicholas:{color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE'},juliana:{color:'#059669',bg:'#ECFDF5',border:'#A7F3D0'},marcelo:{color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE'}};return m[fid]||{color:'#666',bg:'#f5f4f1',border:'#ccc'}}
+
+function pCardHTML(person){
+  const op=searchTerm&&!matchP(person)?'opacity:.15;':'';
+  const click=isAdmin()?`onclick="event.stopPropagation();openPersonModal('${person.id}')"`:'';
+  const ln=getLeaderName(person);
+  const ll=ln?`<div class="pc-leader">Liderança: ${ln}</div>`:'';
+  return `<div class="p-card ${isAdmin()?'':'viewer'}" style="${op}" ${click}><div class="pc-row"><div class="mini-av" style="background:#f0f0ee;color:#666">${ini(person.name)}</div><div class="pc-name">${person.name}</div></div><div class="pc-role">${person.role}</div>${ll}<div class="pc-contact"><a href="mailto:${person.email}">${person.email}</a><br>${person.phone}</div></div>`;
+}
+
+function slHTML(sl){
+  const key='sl_'+sl.id;const isO=openS.has(key);
+  const kids=childrenOf(sl.id);const subKids=kids.filter(k=>k.isSubLeader);const leafKids=kids.filter(k=>!k.isSubLeader);
+  const total=countUnder(sl.id);const op=searchTerm&&!matchP(sl)?'opacity:.15;':'';
+  const editBtn=isAdmin()?`<button class="ebtn" onclick="event.stopPropagation();openPersonModal('${sl.id}')" title="Editar">✎</button>`:'';
+  const ln=getLeaderName(sl);const ll=ln?' · Lid: '+ln:'';
+  let h=`<div class="sub-leader ${isO?'open':''}"><div class="sl-head" onclick="togS('${key}',event)" style="${op}"><div class="sl-left"><div class="mini-av" style="background:#f0f0ee;color:#666">${ini(sl.name)}</div><div><div class="sl-name">${sl.name}</div><div class="sl-role">${sl.role}</div><div class="sl-contact"><a href="mailto:${sl.email}">${sl.email}</a> · ${sl.phone}${ll}</div></div></div><div class="sl-right">${editBtn}<span style="font-size:10px;background:var(--bg);padding:2px 8px;border-radius:10px;color:var(--text3)">${total}</span><span class="sl-chev">▼</span></div></div><div class="sl-body"><div class="sl-body-inner">`;
+  subKids.forEach(sk=>{h+=slHTML(sk)});
+  leafKids.forEach(lk=>{h+=pCardHTML(lk)});
+  h+=`</div></div></div>`;return h;
+}
+
+function render(){
+  let html='';
+  D.founders.forEach(f=>{
+    const fc=founderColor(f.id);const isO=openF.has(f.id);
+    const areaIds=D.areas_order[f.id]||[];
+    let totalPeople=0;areaIds.forEach(aid=>totalPeople+=countArea(aid));
+    const editFBtn=isAdmin()?`<button class="edit-f" onclick="event.stopPropagation();openFounderModal('${f.id}')" title="Editar">✎</button>`:'';
+    html+=`<div><div class="f-card ${isO?'open':''}" style="border-left:4px solid ${fc.color}" onclick="togF('${f.id}')"><div class="chevron">▼</div>${editFBtn}<div class="top"><div class="avatar" style="background:${fc.bg};color:${fc.color};border:2px solid ${fc.border}">${ini(f.name)}</div><div class="info"><h2>${f.name}</h2><div class="role">${f.role}</div><div class="dept">${f.dept}</div></div></div><div class="badge" style="background:${fc.bg};color:${fc.color}">Founder · ${totalPeople} pessoas</div><div class="contact"><a href="mailto:${f.email}">${f.email}</a> · ${f.phone}</div></div><div class="panel ${isO?'open':''}"><div class="panel-inner">`;
+    areaIds.forEach(aid=>{
+      const area=D.areas[aid];if(!area)return;
+      const aKey=f.id+'_'+aid;const aIsO=openA.has(aKey);const cnt=countArea(aid);
+      const subs=D.people.filter(p=>p.areaId===aid&&!p.parentId&&p.isSubLeader);
+      const directs=D.people.filter(p=>p.areaId===aid&&!p.parentId&&!p.isSubLeader);
+      const editABtn=isAdmin()?`<button class="ebtn" onclick="event.stopPropagation();openEditArea('${aid}')" title="Editar área">✎</button>`:'';
+      html+=`<div class="area-row ${aIsO?'open':''}"><div class="area-head" onclick="togA('${aKey}',event)"><div class="left"><div class="dot" style="background:${area.color}"></div><div class="a-name">${area.name}</div>${area.leader?'<div class="a-leader">— '+area.leader+'</div>':''}</div><div class="right">${editABtn}<span class="cnt">${cnt}</span><span class="chev">▼</span></div></div><div class="area-body"><div class="area-body-inner">`;
+      subs.forEach(sl=>{html+=slHTML(sl)});
+      if(directs.length)html+=`<div class="direct-cards">${directs.map(d=>pCardHTML(d)).join('')}</div>`;
+      html+=`</div></div></div>`;
+    });
+    html+=`</div></div></div>`;
+  });
+  document.getElementById('root').innerHTML=html;
+  document.getElementById('counter').textContent=(D.founders.length+D.people.length)+' colaboradores';
+  persist();
+}
+
+function handleSearch(v){searchTerm=v.trim();if(searchTerm){D.founders.forEach(f=>{openF.add(f.id);(D.areas_order[f.id]||[]).forEach(aid=>openA.add(f.id+'_'+aid))});D.people.filter(p=>p.isSubLeader).forEach(p=>openS.add('sl_'+p.id))}render()}
+
+let editTarget=null,editType=null;
+function populateAreaSelect(){const sel=document.getElementById('f-area');sel.innerHTML='';Object.values(D.areas).forEach(a=>{sel.innerHTML+=`<option value="${a.id}">${a.name}</option>`})}
+function populateLeaderSelect(areaId,excludeId){const sel=document.getElementById('f-leader');sel.innerHTML='<option value="">Nenhum (direto na área)</option>';D.people.filter(p=>p.areaId===areaId&&p.isSubLeader&&p.id!==excludeId).forEach(p=>{sel.innerHTML+=`<option value="${p.id}">${p.name}</option>`})}
+function openPersonModal(personId){if(!isAdmin())return;document.getElementById('founderExtra').classList.add('hidden');document.getElementById('personExtra').style.display='';populateAreaSelect();if(personId){const p=D.people.find(x=>x.id===personId);if(!p)return;editTarget=personId;editType='person';document.getElementById('mtitle').textContent='Editar colaborador';document.getElementById('f-name').value=p.name;document.getElementById('f-role').value=p.role;document.getElementById('f-email').value=p.email;document.getElementById('f-phone').value=p.phone;document.getElementById('f-area').value=p.areaId;populateLeaderSelect(p.areaId,p.id);document.getElementById('f-leader').value=p.parentId||'';document.getElementById('f-isSub').value=p.isSubLeader?'1':'0';document.getElementById('btn-del').style.display='inline-block'}else{editTarget=null;editType='new';document.getElementById('mtitle').textContent='Novo colaborador';['f-name','f-role','f-email','f-phone'].forEach(i=>document.getElementById(i).value='');document.getElementById('f-area').selectedIndex=0;populateLeaderSelect(document.getElementById('f-area').value,null);document.getElementById('f-leader').value='';document.getElementById('f-isSub').value='0';document.getElementById('btn-del').style.display='none'}document.getElementById('f-area').onchange=function(){populateLeaderSelect(this.value,editTarget)};document.getElementById('overlay').classList.add('active')}
+function openFounderModal(fid){if(!isAdmin())return;const f=D.founders.find(x=>x.id===fid);if(!f)return;editTarget=fid;editType='founder';document.getElementById('mtitle').textContent='Editar Founder';document.getElementById('f-name').value=f.name;document.getElementById('f-role').value=f.role;document.getElementById('f-email').value=f.email;document.getElementById('f-phone').value=f.phone;document.getElementById('f-dept').value=f.dept;document.getElementById('founderExtra').classList.remove('hidden');document.getElementById('personExtra').style.display='none';document.getElementById('btn-del').style.display='none';document.getElementById('overlay').classList.add('active')}
+function saveCurrent(){const name=document.getElementById('f-name').value.trim(),role=document.getElementById('f-role').value.trim(),email=document.getElementById('f-email').value.trim(),phone=document.getElementById('f-phone').value.trim();if(!name){alert('Preencha o nome.');return}if(editType==='founder'){const f=D.founders.find(x=>x.id===editTarget);if(f){f.name=name;f.role=role;f.email=email;f.phone=phone;f.dept=document.getElementById('f-dept').value.trim()}}else if(editType==='person'){const p=D.people.find(x=>x.id===editTarget);if(p){p.name=name;p.role=role;p.email=email;p.phone=phone;const newArea=document.getElementById('f-area').value,newLeader=document.getElementById('f-leader').value||null,newIsSub=document.getElementById('f-isSub').value==='1';if(newArea!==p.areaId){p.areaId=newArea;p.parentId=newLeader;function mv(pid){D.people.filter(c=>c.parentId===pid).forEach(c=>{c.areaId=newArea;mv(c.id)})}mv(p.id)}else{p.parentId=newLeader}p.isSubLeader=newIsSub}}else if(editType==='new'){D.people.push({id:makeId(),name,role,email,phone,areaId:document.getElementById('f-area').value,parentId:document.getElementById('f-leader').value||null,isSubLeader:document.getElementById('f-isSub').value==='1'})}closeModal();render()}
+function delCurrent(){if(editType!=='person'||!editTarget)return;const person=D.people.find(p=>p.id===editTarget);if(!person)return;const rm=new Set([editTarget]);function fk(pid){D.people.filter(p=>p.parentId===pid).forEach(p=>{rm.add(p.id);fk(p.id)})}fk(editTarget);if(!confirm('Excluir '+person.name+(rm.size>1?' e '+(rm.size-1)+' subordinado(s)':'')+'?'))return;D.people=D.people.filter(p=>!rm.has(p.id));closeModal();render()}
+function closeModal(){document.getElementById('overlay').classList.remove('active');editTarget=null;editType=null}
+
+let editAreaId=null;
+function openEditArea(areaId){if(!isAdmin())return;const area=D.areas[areaId];if(!area)return;editAreaId=areaId;document.getElementById('areaMtitle').textContent='Editar Área';document.getElementById('a-name').value=area.name;document.getElementById('a-leader').value=area.leader||'';document.getElementById('a-color').value=area.color;const fSel=document.getElementById('a-founder');fSel.innerHTML='';D.founders.forEach(f=>{fSel.innerHTML+=`<option value="${f.id}">${f.name}</option>`});for(const[fid,aids]of Object.entries(D.areas_order)){if(aids.includes(areaId))fSel.value=fid}document.getElementById('a-btn-del').style.display='inline-block';document.getElementById('areaOverlay').classList.add('active')}
+function openAreaModal(){if(!isAdmin())return;editAreaId=null;document.getElementById('areaMtitle').textContent='Nova Área';document.getElementById('a-name').value='';document.getElementById('a-leader').value='';document.getElementById('a-color').value='#64748B';const fSel=document.getElementById('a-founder');fSel.innerHTML='';D.founders.forEach(f=>{fSel.innerHTML+=`<option value="${f.id}">${f.name}</option>`});document.getElementById('a-btn-del').style.display='none';document.getElementById('areaOverlay').classList.add('active')}
+function saveArea(){const name=document.getElementById('a-name').value.trim();if(!name){alert('Preencha o nome.');return}const leader=document.getElementById('a-leader').value.trim(),color=document.getElementById('a-color').value,founderId=document.getElementById('a-founder').value;if(editAreaId){D.areas[editAreaId].name=name;D.areas[editAreaId].leader=leader;D.areas[editAreaId].color=color;for(const[fid,aids]of Object.entries(D.areas_order)){const idx=aids.indexOf(editAreaId);if(idx!==-1&&fid!==founderId){aids.splice(idx,1);break}}if(!D.areas_order[founderId])D.areas_order[founderId]=[];if(!D.areas_order[founderId].includes(editAreaId))D.areas_order[founderId].push(editAreaId)}else{const nid=makeId();D.areas[nid]={id:nid,name,leader,color};if(!D.areas_order[founderId])D.areas_order[founderId]=[];D.areas_order[founderId].push(nid)}closeAreaModal();render()}
+function delArea(){if(!editAreaId)return;const area=D.areas[editAreaId],cnt=D.people.filter(p=>p.areaId===editAreaId).length;if(!confirm('Excluir "'+area.name+'"'+(cnt?' e '+cnt+' pessoas':'')+'?'))return;D.people=D.people.filter(p=>p.areaId!==editAreaId);delete D.areas[editAreaId];for(const aids of Object.values(D.areas_order)){const i=aids.indexOf(editAreaId);if(i!==-1)aids.splice(i,1)}closeAreaModal();render()}
+function closeAreaModal(){document.getElementById('areaOverlay').classList.remove('active');editAreaId=null}
+
+function exportJSON(){const b=new Blob([JSON.stringify(D,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='organograma_revi.json';a.click()}
+function importJSON(){const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(d.founders&&d.people&&d.areas){D=d;render();alert('Importado!')}else alert('Formato inválido.')}catch{alert('Erro ao ler.')}};r.readAsText(f)};inp.click()}
+</script>
+</body>
+</html>
