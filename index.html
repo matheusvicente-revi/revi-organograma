@@ -101,6 +101,16 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .p-card .pc-contact{font-size:10px;color:var(--text3);margin-top:4px;line-height:1.5}
 .p-card .pc-contact a{color:var(--text2);text-decoration:none}
 .direct-cards{display:flex;flex-wrap:wrap;gap:6px}
+.sub-area-row{border:1px solid var(--brd-lt);border-radius:8px;margin:8px 0 0;overflow:hidden}
+.sub-area-head{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;cursor:pointer;user-select:none;background:#fafaf8;transition:background .15s}
+.sub-area-head:hover{background:#f5f4f1}
+.sub-area-head .left{display:flex;align-items:center;gap:8px}
+.sub-area-row.open .sub-area-head .chev{transform:rotate(180deg)}
+.sub-area-leader-info{padding:2px 12px 6px;font-size:11px;color:var(--text3);line-height:1.6}
+.sub-area-leader-info a{color:var(--text2);text-decoration:none}
+.sub-area-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.sub-area-row.open .sub-area-body{max-height:8000px}
+.sub-area-body-inner{padding:4px 12px 12px}
 .overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);backdrop-filter:blur(3px);z-index:1000;justify-content:center;align-items:flex-start;padding:4vh 1rem}
 .overlay.active{display:flex}
 .modal{background:var(--card);border-radius:var(--r);padding:1.8rem;width:440px;max-width:100%;box-shadow:0 24px 80px rgba(0,0,0,.14);animation:mIn .2s ease;max-height:90vh;overflow-y:auto}
@@ -125,7 +135,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 <div class="main"><div class="founders" id="root"></div></div>
 </div>
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()"><div class="modal"><h3 id="mtitle">Colaborador</h3><label>Nome completo</label><input id="f-name"><label>Cargo</label><input id="f-role"><div id="founderExtra" class="hidden"><label>Departamento</label><input id="f-dept"></div><label>Email</label><input id="f-email" type="email"><label>Telefone</label><input id="f-phone" placeholder="(00) 00000-0000"><div id="personExtra"><label>Área</label><select id="f-area"></select><label>Liderança direta</label><select id="f-leader"></select><div class="hint">Ao mudar a liderança ou área, a pessoa será reposicionada automaticamente.</div><label>É sub-líder? (tem subordinados)</label><select id="f-isSub"><option value="0">Não</option><option value="1">Sim</option></select></div><div class="acts"><button class="btn btn-red" id="btn-del" onclick="delCurrent()">Excluir</button><span class="sp"></span><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-dark" onclick="saveCurrent()">Salvar</button></div></div></div>
-<div class="overlay" id="areaOverlay" onclick="if(event.target===this)closeAreaModal()"><div class="modal"><h3 id="areaMtitle">Editar Área</h3><label>Nome da área</label><input id="a-name"><label>Líder da área</label><input id="a-leader" placeholder="Nome do líder"><label>Cor</label><input id="a-color" type="color"><label>Pertence ao Founder</label><select id="a-founder"></select><div class="acts"><button class="btn btn-red" id="a-btn-del" onclick="delArea()">Excluir Área</button><span class="sp"></span><button class="btn" onclick="closeAreaModal()">Cancelar</button><button class="btn btn-dark" onclick="saveArea()">Salvar</button></div></div></div>
+<div class="overlay" id="areaOverlay" onclick="if(event.target===this)closeAreaModal()"><div class="modal"><h3 id="areaMtitle">Editar Área</h3><label>Nome da área</label><input id="a-name"><label>Líder da área</label><input id="a-leader" placeholder="Nome do líder"><label>Cor</label><input id="a-color" type="color"><label>E-mail do líder</label><input id="a-leader-email" type="email" placeholder="email@userevi.com"><label>Telefone do líder</label><input id="a-leader-phone" placeholder="(00) 00000-0000"><label>Pertence ao Founder</label><select id="a-founder"></select><label>É sub-área de (opcional)</label><select id="a-parent-area"><option value="">Nenhuma (área principal)</option></select><div class="acts"><button class="btn btn-red" id="a-btn-del" onclick="delArea()">Excluir Área</button><span class="sp"></span><button class="btn" onclick="closeAreaModal()">Cancelar</button><button class="btn btn-dark" onclick="saveArea()">Salvar</button></div></div></div>
 <div class="overlay" id="pwdOverlay" onclick="if(event.target===this)closePwdModal()"><div class="modal"><h3>Alterar senha de admin</h3><label>Senha atual</label><input id="cp-old" type="password"><label>Nova senha</label><input id="cp-new" type="password"><label>Confirmar nova senha</label><input id="cp-confirm" type="password"><div class="hint" id="cp-err" style="color:#dc2626"></div><div class="acts"><span class="sp"></span><button class="btn" onclick="closePwdModal()">Cancelar</button><button class="btn btn-dark" onclick="changePwd()">Alterar</button></div></div></div>
 <script>
 // ═══════════════════════════════════════
@@ -227,6 +237,31 @@ function slHTML(sl){
   h+=`</div></div></div>`;return h;
 }
 
+function subAreaHTML(sa,fid){
+  const saKey=fid+'_sa_'+sa.id;
+  const saIsO=openA.has(saKey);
+  const cnt=countArea(sa.id);
+  const subs=D.people.filter(p=>p.areaId===sa.id&&!p.parentId&&p.isSubLeader);
+  const directs=D.people.filter(p=>p.areaId===sa.id&&!p.parentId&&!p.isSubLeader);
+  const editBtn=isAdmin()?`<button class="ebtn" onclick="event.stopPropagation();openEditArea('${sa.id}')" title="Editar sub-área">✎</button>`:'';
+  let h=`<div class="sub-area-row ${saIsO?'open':''}">`;
+  h+=`<div class="sub-area-head" onclick="togA('${saKey}',event)">`;
+  h+=`<div class="left"><div class="dot" style="background:${sa.color}"></div><div class="a-name">${sa.name}</div>${sa.leader?'<div class="a-leader">— '+sa.leader+'</div>':''}</div>`;
+  h+=`<div class="right">${editBtn}<span class="cnt">${cnt}</span><span class="chev">▼</span></div></div>`;
+  if(sa.leader&&(sa.leaderEmail||sa.leaderPhone)){
+    h+=`<div class="sub-area-leader-info">`;
+    if(sa.leaderEmail)h+=`<a href="mailto:${sa.leaderEmail}">${sa.leaderEmail}</a>`;
+    if(sa.leaderEmail&&sa.leaderPhone)h+=' · ';
+    if(sa.leaderPhone)h+=sa.leaderPhone;
+    h+=`</div>`;
+  }
+  h+=`<div class="sub-area-body"><div class="sub-area-body-inner">`;
+  subs.forEach(sl=>{h+=slHTML(sl)});
+  if(directs.length)h+=`<div class="direct-cards">${directs.map(d=>pCardHTML(d)).join('')}</div>`;
+  h+=`</div></div></div>`;
+  return h;
+}
+
 function render(){
   let html='';
   D.founders.forEach(f=>{
@@ -236,7 +271,7 @@ function render(){
     const editFBtn=isAdmin()?`<button class="edit-f" onclick="event.stopPropagation();openFounderModal('${f.id}')" title="Editar">✎</button>`:'';
     html+=`<div><div class="f-card ${isO?'open':''}" style="border-left:4px solid ${fc.color}" onclick="togF('${f.id}')"><div class="chevron">▼</div>${editFBtn}<div class="top"><div class="avatar" style="background:${fc.bg};color:${fc.color};border:2px solid ${fc.border}">${ini(f.name)}</div><div class="info"><h2>${f.name}</h2><div class="role">${f.role}</div><div class="dept">${f.dept}</div></div></div><div class="badge" style="background:${fc.bg};color:${fc.color}">Founder · ${totalPeople} pessoas</div><div class="contact"><a href="mailto:${f.email}">${f.email}</a> · ${f.phone}</div></div><div class="panel ${isO?'open':''}"><div class="panel-inner">`;
     areaIds.forEach(aid=>{
-      const area=D.areas[aid];if(!area)return;
+      const area=D.areas[aid];if(!area||area.parentAreaId)return;
       const aKey=f.id+'_'+aid;const aIsO=openA.has(aKey);const cnt=countArea(aid);
       const subs=D.people.filter(p=>p.areaId===aid&&!p.parentId&&p.isSubLeader);
       const directs=D.people.filter(p=>p.areaId===aid&&!p.parentId&&!p.isSubLeader);
@@ -244,6 +279,7 @@ function render(){
       html+=`<div class="area-row ${aIsO?'open':''}"><div class="area-head" onclick="togA('${aKey}',event)"><div class="left"><div class="dot" style="background:${area.color}"></div><div class="a-name">${area.name}</div>${area.leader?'<div class="a-leader">— '+area.leader+'</div>':''}</div><div class="right">${editABtn}<span class="cnt">${cnt}</span><span class="chev">▼</span></div></div><div class="area-body"><div class="area-body-inner">`;
       subs.forEach(sl=>{html+=slHTML(sl)});
       if(directs.length)html+=`<div class="direct-cards">${directs.map(d=>pCardHTML(d)).join('')}</div>`;
+      Object.values(D.areas).filter(a=>a.parentAreaId===aid).forEach(sa=>{html+=subAreaHTML(sa,f.id)});
       html+=`</div></div></div>`;
     });
     html+=`</div></div></div>`;
@@ -270,9 +306,9 @@ function closeModal(){document.getElementById('overlay').classList.remove('activ
 // AREA MODAL
 // ═══════════════════════════════════════
 let editAreaId=null;
-function openEditArea(areaId){if(!isAdmin())return;const area=D.areas[areaId];if(!area)return;editAreaId=areaId;document.getElementById('areaMtitle').textContent='Editar Área';document.getElementById('a-name').value=area.name;document.getElementById('a-leader').value=area.leader||'';document.getElementById('a-color').value=area.color;const fSel=document.getElementById('a-founder');fSel.innerHTML='';D.founders.forEach(f=>{fSel.innerHTML+=`<option value="${f.id}">${f.name}</option>`});for(const[fid,aids]of Object.entries(D.areas_order)){if(aids.includes(areaId))fSel.value=fid}document.getElementById('a-btn-del').style.display='inline-block';document.getElementById('areaOverlay').classList.add('active')}
-function openAreaModal(){if(!isAdmin())return;editAreaId=null;document.getElementById('areaMtitle').textContent='Nova Área';document.getElementById('a-name').value='';document.getElementById('a-leader').value='';document.getElementById('a-color').value='#64748B';const fSel=document.getElementById('a-founder');fSel.innerHTML='';D.founders.forEach(f=>{fSel.innerHTML+=`<option value="${f.id}">${f.name}</option>`});document.getElementById('a-btn-del').style.display='none';document.getElementById('areaOverlay').classList.add('active')}
-async function saveArea(){const name=document.getElementById('a-name').value.trim();if(!name){alert('Preencha o nome.');return}const leader=document.getElementById('a-leader').value.trim(),color=document.getElementById('a-color').value,founderId=document.getElementById('a-founder').value;if(editAreaId){D.areas[editAreaId].name=name;D.areas[editAreaId].leader=leader;D.areas[editAreaId].color=color;for(const[fid,aids]of Object.entries(D.areas_order)){const idx=aids.indexOf(editAreaId);if(idx!==-1&&fid!==founderId){aids.splice(idx,1);break}}if(!D.areas_order[founderId])D.areas_order[founderId]=[];if(!D.areas_order[founderId].includes(editAreaId))D.areas_order[founderId].push(editAreaId)}else{const nid=makeId();D.areas[nid]={id:nid,name,leader,color};if(!D.areas_order[founderId])D.areas_order[founderId]=[];D.areas_order[founderId].push(nid)}closeAreaModal();render();await persist()}
+function openEditArea(areaId){if(!isAdmin())return;const area=D.areas[areaId];if(!area)return;editAreaId=areaId;document.getElementById('areaMtitle').textContent='Editar Área';document.getElementById('a-name').value=area.name;document.getElementById('a-leader').value=area.leader||'';document.getElementById('a-color').value=area.color;const fSel=document.getElementById('a-founder');fSel.innerHTML='';D.founders.forEach(f=>{fSel.innerHTML+=`<option value="${f.id}">${f.name}</option>`});for(const[fid,aids]of Object.entries(D.areas_order)){if(aids.includes(areaId))fSel.value=fid}const paSel=document.getElementById('a-parent-area');paSel.innerHTML='<option value="">Nenhuma (área principal)</option>';Object.values(D.areas).filter(a=>a.id!==areaId).forEach(a=>{paSel.innerHTML+=`<option value="${a.id}">${a.name}</option>`});paSel.value=area.parentAreaId||'';document.getElementById('a-leader-email').value=area.leaderEmail||'';document.getElementById('a-leader-phone').value=area.leaderPhone||'';document.getElementById('a-btn-del').style.display='inline-block';document.getElementById('areaOverlay').classList.add('active')}
+function openAreaModal(){if(!isAdmin())return;editAreaId=null;document.getElementById('areaMtitle').textContent='Nova Área';document.getElementById('a-name').value='';document.getElementById('a-leader').value='';document.getElementById('a-color').value='#64748B';const fSel=document.getElementById('a-founder');fSel.innerHTML='';D.founders.forEach(f=>{fSel.innerHTML+=`<option value="${f.id}">${f.name}</option>`});document.getElementById('a-btn-del').style.display='none';const paSel2=document.getElementById('a-parent-area');paSel2.innerHTML='<option value="">Nenhuma (área principal)</option>';Object.values(D.areas).forEach(a=>{paSel2.innerHTML+=`<option value="${a.id}">${a.name}</option>`});paSel2.value='';document.getElementById('a-leader-email').value='';document.getElementById('a-leader-phone').value='';document.getElementById('areaOverlay').classList.add('active')}
+async function saveArea(){const name=document.getElementById('a-name').value.trim();if(!name){alert('Preencha o nome.');return}const leader=document.getElementById('a-leader').value.trim(),color=document.getElementById('a-color').value,founderId=document.getElementById('a-founder').value;if(editAreaId){D.areas[editAreaId].name=name;D.areas[editAreaId].leader=leader;D.areas[editAreaId].color=color;D.areas[editAreaId].leaderEmail=document.getElementById('a-leader-email').value.trim();D.areas[editAreaId].leaderPhone=document.getElementById('a-leader-phone').value.trim();D.areas[editAreaId].parentAreaId=document.getElementById('a-parent-area').value||null;for(const[fid,aids]of Object.entries(D.areas_order)){const idx=aids.indexOf(editAreaId);if(idx!==-1&&fid!==founderId){aids.splice(idx,1);break}}if(!D.areas_order[founderId])D.areas_order[founderId]=[];if(!D.areas_order[founderId].includes(editAreaId))D.areas_order[founderId].push(editAreaId)}else{const nid=makeId();D.areas[nid]={id:nid,name,leader,color,leaderEmail:document.getElementById('a-leader-email').value.trim(),leaderPhone:document.getElementById('a-leader-phone').value.trim(),parentAreaId:document.getElementById('a-parent-area').value||null};if(!D.areas_order[founderId])D.areas_order[founderId]=[];D.areas_order[founderId].push(nid)}closeAreaModal();render();await persist()}
 async function delArea(){if(!editAreaId)return;const area=D.areas[editAreaId],cnt=D.people.filter(p=>p.areaId===editAreaId).length;if(!confirm('Excluir "'+area.name+'"'+(cnt?' e '+cnt+' pessoas':'')+'?'))return;D.people=D.people.filter(p=>p.areaId!==editAreaId);delete D.areas[editAreaId];for(const aids of Object.values(D.areas_order)){const i=aids.indexOf(editAreaId);if(i!==-1)aids.splice(i,1)}closeAreaModal();render();await persist()}
 function closeAreaModal(){document.getElementById('areaOverlay').classList.remove('active');editAreaId=null}
 
