@@ -101,16 +101,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .p-card .pc-contact{font-size:10px;color:var(--text3);margin-top:4px;line-height:1.5}
 .p-card .pc-contact a{color:var(--text2);text-decoration:none}
 .direct-cards{display:flex;flex-wrap:wrap;gap:6px}
-.sub-area-row{border:1px solid var(--brd-lt);border-radius:8px;margin:8px 0 0;overflow:hidden}
-.sub-area-head{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;cursor:pointer;user-select:none;background:#fafaf8;transition:background .15s}
-.sub-area-head:hover{background:#f5f4f1}
-.sub-area-head .left{display:flex;align-items:center;gap:8px}
-.sub-area-row.open .sub-area-head .chev{transform:rotate(180deg)}
-.sub-area-leader-info{padding:2px 12px 6px;font-size:11px;color:var(--text3);line-height:1.6}
-.sub-area-leader-info a{color:var(--text2);text-decoration:none}
-.sub-area-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
-.sub-area-row.open .sub-area-body{max-height:8000px}
-.sub-area-body-inner{padding:4px 12px 12px}
+.area-row.sub-area{margin-top:8px}
+.sub-area-leader-contact{font-size:11px;color:var(--text3);margin-left:16px;margin-top:2px;line-height:1.4}
+.sub-area-leader-contact a{color:var(--text2);text-decoration:none}
 .overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);backdrop-filter:blur(3px);z-index:1000;justify-content:center;align-items:flex-start;padding:4vh 1rem}
 .overlay.active{display:flex}
 .modal{background:var(--card);border-radius:var(--r);padding:1.8rem;width:440px;max-width:100%;box-shadow:0 24px 80px rgba(0,0,0,.14);animation:mIn .2s ease;max-height:90vh;overflow-y:auto}
@@ -244,18 +237,17 @@ function subAreaHTML(sa,fid){
   const subs=D.people.filter(p=>p.areaId===sa.id&&!p.parentId&&p.isSubLeader);
   const directs=D.people.filter(p=>p.areaId===sa.id&&!p.parentId&&!p.isSubLeader);
   const editBtn=isAdmin()?`<button class="ebtn" onclick="event.stopPropagation();openEditArea('${sa.id}')" title="Editar sub-área">✎</button>`:'';
-  let h=`<div class="sub-area-row ${saIsO?'open':''}">`;
-  h+=`<div class="sub-area-head" onclick="togA('${saKey}',event)">`;
-  h+=`<div class="left"><div class="dot" style="background:${sa.color}"></div><div class="a-name">${sa.name}</div>${sa.leader?'<div class="a-leader">— '+sa.leader+'</div>':''}</div>`;
-  h+=`<div class="right">${editBtn}<span class="cnt">${cnt}</span><span class="chev">▼</span></div></div>`;
-  if(sa.leader&&(sa.leaderEmail||sa.leaderPhone)){
-    h+=`<div class="sub-area-leader-info">`;
-    if(sa.leaderEmail)h+=`<a href="mailto:${sa.leaderEmail}">${sa.leaderEmail}</a>`;
-    if(sa.leaderEmail&&sa.leaderPhone)h+=' · ';
-    if(sa.leaderPhone)h+=sa.leaderPhone;
-    h+=`</div>`;
-  }
-  h+=`<div class="sub-area-body"><div class="sub-area-body-inner">`;
+  const contactParts=[];
+  if(sa.leaderEmail)contactParts.push(`<a href="mailto:${sa.leaderEmail}">${sa.leaderEmail}</a>`);
+  if(sa.leaderPhone)contactParts.push(sa.leaderPhone);
+  const contactLine=sa.leader&&contactParts.length?`<div class="sub-area-leader-contact">${contactParts.join(' · ')}</div>`:'';
+  let h=`<div class="area-row sub-area ${saIsO?'open':''}">`;
+  h+=`<div class="area-head" onclick="togA('${saKey}',event)">`;
+  h+=`<div class="left" style="flex-direction:column;align-items:flex-start;gap:0">`;
+  h+=`<div style="display:flex;align-items:center;gap:8px"><div class="dot" style="background:${sa.color}"></div><div class="a-name">${sa.name}</div>${sa.leader?'<div class="a-leader">— '+sa.leader+'</div>':''}</div>`;
+  h+=contactLine;
+  h+=`</div><div class="right">${editBtn}<span class="cnt">${cnt}</span><span class="chev">▼</span></div></div>`;
+  h+=`<div class="area-body"><div class="area-body-inner">`;
   subs.forEach(sl=>{h+=slHTML(sl)});
   if(directs.length)h+=`<div class="direct-cards">${directs.map(d=>pCardHTML(d)).join('')}</div>`;
   h+=`</div></div></div>`;
