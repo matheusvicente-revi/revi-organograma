@@ -117,10 +117,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .modal .hint{font-size:10px;color:var(--text3);margin-top:3px}
 .hidden{display:none!important}
 /* ── Email Groups ── */
-.email-hex-btn{position:fixed;bottom:32px;right:32px;width:100px;height:88px;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);background:#1a1a1a;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;z-index:900;transition:background .2s,transform .2s;font-family:var(--font);user-select:none}
-.email-hex-btn:hover{background:#333;transform:scale(1.06)}
-.email-hex-btn .hex-icon{font-size:20px;line-height:1}
-.email-hex-btn .hex-label{font-size:8.5px;font-weight:600;text-align:center;line-height:1.4;letter-spacing:.2px}
+.email-hex-btn{position:fixed;bottom:36px;right:36px;width:120px;height:106px;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);background:linear-gradient(135deg,#7C3AED,#BE185D);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;z-index:900;transition:transform .2s,filter .2s;font-family:var(--font);user-select:none;filter:drop-shadow(0 4px 16px rgba(124,58,237,.45));animation:hexPulse 2.8s ease-in-out infinite}
+.email-hex-btn:hover{transform:scale(1.08);filter:drop-shadow(0 6px 22px rgba(124,58,237,.6))}
+.email-hex-btn .hex-icon{font-size:24px;line-height:1}
+.email-hex-btn .hex-label{font-size:9.5px;font-weight:700;text-align:center;line-height:1.4;letter-spacing:.3px}
+@keyframes hexPulse{0%,100%{filter:drop-shadow(0 4px 16px rgba(124,58,237,.45))}50%{filter:drop-shadow(0 4px 24px rgba(190,24,93,.7))}}
 .email-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.25);backdrop-filter:blur(2px);z-index:940;display:none}
 .email-backdrop.open{display:block}
 .email-drawer{position:fixed;top:0;right:-400px;width:360px;height:100vh;background:var(--card);box-shadow:-6px 0 32px rgba(0,0,0,.1);z-index:950;transition:right .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;font-family:var(--font)}
