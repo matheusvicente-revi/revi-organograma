@@ -116,6 +116,32 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .modal .acts .sp{flex:1}
 .modal .hint{font-size:10px;color:var(--text3);margin-top:3px}
 .hidden{display:none!important}
+/* ── Email Groups ── */
+.email-hex-btn{position:fixed;bottom:32px;right:32px;width:100px;height:88px;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);background:#1a1a1a;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;z-index:900;transition:background .2s,transform .2s;font-family:var(--font);user-select:none}
+.email-hex-btn:hover{background:#333;transform:scale(1.06)}
+.email-hex-btn .hex-icon{font-size:20px;line-height:1}
+.email-hex-btn .hex-label{font-size:8.5px;font-weight:600;text-align:center;line-height:1.4;letter-spacing:.2px}
+.email-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.25);backdrop-filter:blur(2px);z-index:940;display:none}
+.email-backdrop.open{display:block}
+.email-drawer{position:fixed;top:0;right:-400px;width:360px;height:100vh;background:var(--card);box-shadow:-6px 0 32px rgba(0,0,0,.1);z-index:950;transition:right .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;font-family:var(--font)}
+.email-drawer.open{right:0}
+.email-drawer-hdr{padding:1.4rem 1.4rem .9rem;border-bottom:1px solid var(--brd-lt);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.email-drawer-hdr h3{font-size:17px;font-weight:700;margin-bottom:5px}
+.email-drawer-hdr p{font-size:11px;color:var(--text3);line-height:1.55}
+.email-drawer-hdr .edh-close{background:none;border:none;cursor:pointer;font-size:15px;color:var(--text3);padding:0;font-family:var(--font);flex-shrink:0;margin-top:2px}
+.email-drawer-hdr .edh-close:hover{color:var(--text)}
+.email-drawer-body{padding:1rem 1.2rem;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:7px}
+.eg-card{border:1px solid var(--brd-lt);border-radius:10px;padding:11px 13px;display:flex;align-items:center;justify-content:space-between;gap:10px;transition:border-color .15s}
+.eg-card:hover{border-color:var(--brd)}
+.eg-left{display:flex;align-items:center;gap:10px;min-width:0}
+.eg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.eg-name{font-size:13px;font-weight:600;margin-bottom:2px}
+.eg-email{font-size:11px;color:var(--text3)}
+.eg-email a{color:var(--text2);text-decoration:none}
+.eg-email a:hover{text-decoration:underline}
+.eg-copy{font-family:var(--font);font-size:10px;font-weight:500;padding:4px 10px;border-radius:6px;border:1px solid var(--brd-lt);background:var(--card);color:var(--text3);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.eg-copy:hover{border-color:var(--brd);color:var(--text)}
+.eg-copy.copied{background:#ECFDF5;color:#059669;border-color:#A7F3D0}
 </style>
 </head>
 <body>
@@ -130,6 +156,52 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()"><div class="modal"><h3 id="mtitle">Colaborador</h3><label>Nome completo</label><input id="f-name"><label>Cargo</label><input id="f-role"><div id="founderExtra" class="hidden"><label>Departamento</label><input id="f-dept"></div><label>Email</label><input id="f-email" type="email"><label>Telefone</label><input id="f-phone" placeholder="(00) 00000-0000"><div id="personExtra"><label>Área</label><select id="f-area"></select><label>Liderança direta</label><select id="f-leader"></select><div class="hint">Ao mudar a liderança ou área, a pessoa será reposicionada automaticamente.</div><label>É sub-líder? (tem subordinados)</label><select id="f-isSub"><option value="0">Não</option><option value="1">Sim</option></select></div><div class="acts"><button class="btn btn-red" id="btn-del" onclick="delCurrent()">Excluir</button><span class="sp"></span><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-dark" onclick="saveCurrent()">Salvar</button></div></div></div>
 <div class="overlay" id="areaOverlay" onclick="if(event.target===this)closeAreaModal()"><div class="modal"><h3 id="areaMtitle">Editar Área</h3><label>Nome da área</label><input id="a-name"><label>Líder da área</label><input id="a-leader" placeholder="Nome do líder"><label>Cor</label><input id="a-color" type="color"><label>E-mail do líder</label><input id="a-leader-email" type="email" placeholder="email@userevi.com"><label>Telefone do líder</label><input id="a-leader-phone" placeholder="(00) 00000-0000"><label>Pertence ao Founder</label><select id="a-founder"></select><label>É sub-área de (opcional)</label><select id="a-parent-area"><option value="">Nenhuma (área principal)</option></select><div class="acts"><button class="btn btn-red" id="a-btn-del" onclick="delArea()">Excluir Área</button><span class="sp"></span><button class="btn" onclick="closeAreaModal()">Cancelar</button><button class="btn btn-dark" onclick="saveArea()">Salvar</button></div></div></div>
 <div class="overlay" id="pwdOverlay" onclick="if(event.target===this)closePwdModal()"><div class="modal"><h3>Alterar senha de admin</h3><label>Senha atual</label><input id="cp-old" type="password"><label>Nova senha</label><input id="cp-new" type="password"><label>Confirmar nova senha</label><input id="cp-confirm" type="password"><div class="hint" id="cp-err" style="color:#dc2626"></div><div class="acts"><span class="sp"></span><button class="btn" onclick="closePwdModal()">Cancelar</button><button class="btn btn-dark" onclick="changePwd()">Alterar</button></div></div></div>
+<!-- Email Groups Hex Button -->
+<div class="email-hex-btn" onclick="toggleEmailDrawer()">
+  <span class="hex-icon">✉</span>
+  <span class="hex-label">Grupos<br>de e-mail</span>
+</div>
+<!-- Email Groups Drawer -->
+<div class="email-backdrop" id="emailBackdrop" onclick="toggleEmailDrawer()"></div>
+<div class="email-drawer" id="emailDrawer">
+  <div class="email-drawer-hdr">
+    <div>
+      <h3>Grupos de e-mail</h3>
+      <p>Para se comunicar e marcar reuniões de forma massiva com áreas de mais de uma pessoa</p>
+    </div>
+    <button class="edh-close" onclick="toggleEmailDrawer()">✕</button>
+  </div>
+  <div class="email-drawer-body">
+    <div class="eg-card">
+      <div class="eg-left"><div class="eg-dot" style="background:#1a1a1a"></div><div><div class="eg-name">Empresa toda</div><div class="eg-email"><a href="mailto:revi-geral@userevi.com">revi-geral@userevi.com</a></div></div></div>
+      <button class="eg-copy" onclick="copyEmail('revi-geral@userevi.com',this)">Copiar</button>
+    </div>
+    <div class="eg-card">
+      <div class="eg-left"><div class="eg-dot" style="background:#EA580C"></div><div><div class="eg-name">Comercial</div><div class="eg-email"><a href="mailto:comercial@userevi.com">comercial@userevi.com</a></div></div></div>
+      <button class="eg-copy" onclick="copyEmail('comercial@userevi.com',this)">Copiar</button>
+    </div>
+    <div class="eg-card">
+      <div class="eg-left"><div class="eg-dot" style="background:#db2777"></div><div><div class="eg-name">Customer Experience</div><div class="eg-email"><a href="mailto:cx@userevi.com">cx@userevi.com</a></div></div></div>
+      <button class="eg-copy" onclick="copyEmail('cx@userevi.com',this)">Copiar</button>
+    </div>
+    <div class="eg-card">
+      <div class="eg-left"><div class="eg-dot" style="background:#059669"></div><div><div class="eg-name">Customer Success</div><div class="eg-email"><a href="mailto:cs@userevi.com">cs@userevi.com</a></div></div></div>
+      <button class="eg-copy" onclick="copyEmail('cs@userevi.com',this)">Copiar</button>
+    </div>
+    <div class="eg-card">
+      <div class="eg-left"><div class="eg-dot" style="background:#7C3AED"></div><div><div class="eg-name">Engenharia de Software</div><div class="eg-email"><a href="mailto:tech@userevi.com">tech@userevi.com</a></div></div></div>
+      <button class="eg-copy" onclick="copyEmail('tech@userevi.com',this)">Copiar</button>
+    </div>
+    <div class="eg-card">
+      <div class="eg-left"><div class="eg-dot" style="background:#0891B2"></div><div><div class="eg-name">Marketing</div><div class="eg-email"><a href="mailto:marketing-revi@userevi.com">marketing-revi@userevi.com</a></div></div></div>
+      <button class="eg-copy" onclick="copyEmail('marketing-revi@userevi.com',this)">Copiar</button>
+    </div>
+    <div class="eg-card">
+      <div class="eg-left"><div class="eg-dot" style="background:#BE185D"></div><div><div class="eg-name">Parcerias</div><div class="eg-email"><a href="mailto:parcerias-revi@userevi.com">parcerias-revi@userevi.com</a></div></div></div>
+      <button class="eg-copy" onclick="copyEmail('parcerias-revi@userevi.com',this)">Copiar</button>
+    </div>
+  </div>
+</div>
 <script>
 // ═══════════════════════════════════════
 // SUPABASE CONFIG
@@ -309,6 +381,20 @@ function closeAreaModal(){document.getElementById('areaOverlay').classList.remov
 // ═══════════════════════════════════════
 function exportJSON(){const b=new Blob([JSON.stringify(D,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='organograma_revi.json';a.click()}
 async function importJSON(){const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=async e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=async ev=>{try{const d=JSON.parse(ev.target.result);if(d.founders&&d.people&&d.areas){D=d;render();await persist();alert('Importado e sincronizado!')}else alert('Formato inválido.')}catch{alert('Erro ao ler.')}};r.readAsText(f)};inp.click()}
+
+// ═══════════════════════════════════════
+// EMAIL GROUPS
+// ═══════════════════════════════════════
+function toggleEmailDrawer(){
+  document.getElementById('emailDrawer').classList.toggle('open');
+  document.getElementById('emailBackdrop').classList.toggle('open');
+}
+function copyEmail(email,btn){
+  navigator.clipboard.writeText(email).then(()=>{
+    btn.textContent='Copiado ✓';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copiar';btn.classList.remove('copied')},2000);
+  });
+}
 </script>
 </body>
 </html>
