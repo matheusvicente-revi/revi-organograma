@@ -1,0 +1,23 @@
+name: Supabase Keep Alive
+
+on:
+  schedule:
+    - cron: '0 9 * * 1,4'  # Toda segunda e quinta às 9h UTC (06h Brasília)
+  workflow_dispatch:        # Permite disparo manual se necessário
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://lgwjumolpkuobsafsvhb.supabase.co/rest/v1/organograma?id=eq.main&select=id" \
+            -H "apikey: sb_publishable_HQGJ0euOFiEQGnjFT9E0cA_2BcPW3lF" \
+            -H "Authorization: Bearer sb_publishable_HQGJ0euOFiEQGnjFT9E0cA_2BcPW3lF")
+          echo "Status HTTP: $STATUS"
+          if [ "$STATUS" -ne 200 ]; then
+            echo "Aviso: resposta inesperada do Supabase ($STATUS)"
+            exit 1
+          fi
+          echo "Supabase ativo!"
