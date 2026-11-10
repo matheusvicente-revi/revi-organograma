@@ -210,7 +210,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 const SUPABASE_URL='https://lgwjumolpkuobsafsvhb.supabase.co';
 const SUPABASE_KEY='sb_publishable_HQGJ0euOFiEQGnjFT9E0cA_2BcPW3lF';
 const API=SUPABASE_URL+'/rest/v1/organograma';
-const HEADERS={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=minimal'};
+const SAVE_FN=SUPABASE_URL+'/functions/v1/save-organograma';
+const HEADERS={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'};
 
 async function loadFromSupabase(){
   try{
@@ -224,7 +225,8 @@ async function loadFromSupabase(){
 
 async function saveToSupabase(){
   try{
-    const res=await fetch(API+'?id=eq.main',{method:'PATCH',headers:{...HEADERS,'Prefer':'return=minimal'},body:JSON.stringify({data:D,updated_at:new Date().toISOString()})});
+    const adminHash=localStorage.getItem('revi_admin_hash')||'';
+    const res=await fetch(SAVE_FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:D,adminHash})});
     if(!res.ok)throw new Error(res.statusText);
     setSyncStatus('ok','Salvo no banco ✓');
   }catch(e){console.error('Save error:',e);setSyncStatus('err','Erro ao salvar — alteração só local')}
